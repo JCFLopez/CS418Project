@@ -16,7 +16,7 @@
 			</div>
 		</div>	
 		
-		<table>
+		<table align ="center">
 			<tr>
 				<td width="40%" valign="top">
 					<form action="#" method="POST">
