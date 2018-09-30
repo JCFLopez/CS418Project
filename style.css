@@ -1,5 +1,5 @@
 .header {
-	background-color: #00B9ED;
+	background-color: black;
 	height: 45px;
 	border-bottom: 0px;
 	padding-left: auto;
@@ -13,6 +13,15 @@
 	width: 1000px;
 	padding-top: 0px;
 	padding-bottom: 0px;
+}
+
+#menu {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	height: 37px;
+	padding-top: 19px
+	margin-right: 4%;
 }
 
 #menu a {
