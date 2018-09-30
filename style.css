@@ -1,0 +1,29 @@
+.header {
+	background-color: #00B9ED;
+	height: 45px;
+	border-bottom: 0px;
+	padding-left: auto;
+	padding-right: auto;
+	width: 100%;
+}
+
+#wrapper {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1000px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+#menu a {
+	color: #FFFFFF;
+	text-decoration: none;
+	font-size: 14px;
+	background-repeat: no-repeat;
+	padding-top: 19px;
+	padding-bottom: 22px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#menu a:hover {}
