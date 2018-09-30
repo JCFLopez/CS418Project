@@ -4,7 +4,7 @@ $servername = "localhost";
 //$password = "M0n@rch$";
 $username = "root";
 $password = "";
-$dbname = "mysqltest";
+$dbname = "social_users";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
