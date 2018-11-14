@@ -1,0 +1,688 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html, body {
+	font-family: 'Exo 2', sans-serif;
+	height: 100%;
+	width: 100%;
+	background-color: whitesmoke;
+}
+
+.header {
+	position: fixed;
+	top: 0;
+	background-color: #2D2C2E;
+	height: 56px;
+	border-bottom: 0px;
+	padding-left: auto;
+	padding-right: auto;
+	width: 100%;
+}
+
+#logo {
+	background-color: #2D2C2E;
+	float: left;
+	color: #FFFFFF;
+	text-decoration: none;
+	font-size: 30px;
+	padding: 6px 8px 6px 16px;
+	background-repeat: no-repeat;
+}
+
+#group_logo {
+	background-color: #2D2C2E;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 30px;
+	padding: 6px 8px 6px 16px;
+	background-repeat: no-repeat;
+}
+
+.menu {
+	position: fixed;
+	background-color: #2D2C2E;
+	text-decoration: none;
+	top: 0px;
+	right: 0px;
+	height: 37px;
+	padding-top: 17px;
+	padding-right: 25px;
+}
+
+.menu ul{
+	list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.menu a{
+	float: right;
+	color: #FFFFFF;
+	text-decoration: none;
+	font-size: 14px;
+	background-repeat: no-repeat;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.menu a:hover,.sidemenu a:hover{
+	color: #D2CCD9;
+}
+
+.index_menu {
+	background-color: #2D2C2E;
+	text-decoration: none;
+	top: 0px;
+	right: 0px;
+	height: 37px;
+	padding-top: 17px;
+	padding-right: 25px;
+}
+
+.index_menu ul{
+	list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.index_menu a{
+	float: right;
+	color: #FFFFFF;
+	text-decoration: none;
+	font-size: 14px;
+	background-repeat: no-repeat;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.index_menu a:hover,.sidemenu a:hover{
+	color: #D2CCD9;
+}
+
+.sidemenu {
+	position: fixed;
+	top: 50px;
+	font-size: 20px;
+	width: 15%;
+	color: #FFFFFF;
+	display: inline-block;
+    background-color: #2D2C2E;
+    height: 100%;
+}
+
+.sidemenu ul {
+	list-style-type: none;
+}
+
+.sidemenu li a {
+	display: block;
+	padding: 6px 8px 6px 16px;
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+span {
+	display: block;
+	padding: 6px 8px 6px 16px;
+	text-decoration: none;
+}
+
+span.active {
+	color: #909090;
+}
+
+#submenu ul{
+	padding-left: 15px;
+}
+
+#submenu span {
+	cursor: pointer;
+}
+
+li.active > a {
+	color: #909090;
+}
+
+
+#userName {
+	display: inline;
+	padding-top: 25px;
+	padding-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	word-break: break-word;
+}
+
+.time {
+	display: inline;
+	font-size: 15px;
+	margin-top: 45px;
+	float: right;
+}
+
+.likeys {
+	margin-top: 5px;
+	margin-left: 15px;
+	float: left;
+	display: inline;
+
+}
+
+.dislikeys {
+	margin-top: 5px;
+	margin-left: 15px;
+}
+
+.reply_pos{
+	position: relative;
+	float: right;
+	display: inline;
+	margin-right: 400px;
+}
+
+#reply{
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	font-size: 15 px;
+	padding: 5px;
+	width: 300px;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	border: 1 px black;
+	border-radius: 4px;
+	outline: none;
+}
+
+#reply_submit {
+	font-size: 15 px;
+	padding: 5px;
+	width: 50px;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	border: 1px;
+	border-radius: 4px;
+	outline: none;
+}
+
+#like_input{
+	font-size: 15px;
+	padding: 2px;
+	border: 1px solid #D2CCD9;
+	border-radius: 4px;
+	margin-bottom: 30px;
+}
+
+#dislike_input{
+	font-size: 15px;
+	padding: 2px;
+	border: 1px solid #D2CCD9;
+	border-radius: 4px;
+	margin-bottom: 30px;
+	margin-left: 10px;
+}
+
+
+table {
+	margin: 0px auto;
+	padding-top: 70px;
+}
+
+#loggin_text {
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	font-size: 15 px;
+	padding: 5px;
+	width: 300px;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	border: 1 px black;
+	border-radius: 4px;
+	outline: none;
+}
+
+#loggin_submit{
+	font-size: 15 px;
+	padding: 5px;
+	width: 312px;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	border: 1px;
+	border-radius: 4px;
+	outline: none;
+}
+
+.posting {
+	position: fixed;
+	margin-top: 80px;
+	left: 105px;
+	width: 100%;
+	font-size: 13px;
+	color: white;
+	text-align: center;
+}
+
+#messeging {
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	font-size: 15 px;
+	padding: 5px;
+	width: 65%;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	border: 1 px black;
+	border-radius: 4px;
+	height: 43px;
+	outline: none;
+}
+
+#msg_submit{
+	font-size: 15 px;
+	padding: 5px;
+	width: 100px;
+	margin-bottom: 3px;
+	border: 1px;
+	height: 45px;
+	border-radius: 4px;
+	outline: none;
+}
+
+input[type=submit]:hover {
+    background-color: #D2CCD9;
+}
+
+.footer {
+   position: fixed;
+   padding-top: 15px;
+   bottom: 0; 	
+   width: 100%;
+   background-color: #2D2C2E;
+   font-size: 13px;
+   color: white;
+   text-align: center;
+}
+
+.notfound {
+	color: black;
+	text-align: center;
+}
+
+.profile_pos{
+	padding-left: 200px;
+}
+
+ .profile {
+	margin: 0px auto;
+	margin-top: 100px;
+	padding-top: 100px;
+	padding-bottom: 0px;
+	width: 35%;
+	background-color: #666;
+	font-size: 13px;
+	color: white;	
+	border: 1px solid #2D2C2E;
+	border-radius: 25px 25px 0px 0px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+ }
+
+.pro_group {
+	margin: 0px auto;
+	padding-left: 0px;
+	padding-bottom: 20px;
+	width: 35%;
+	background-color: #424242;
+	font-size: 13px;
+	color: white;
+	border: 1px solid #2D2C2E;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+ }
+
+ .pro_group ul {
+	list-style-type: none;
+ }
+
+ .pro_info {
+	margin: 0px auto;
+	padding-top: 0px;
+	padding-bottom: 20px;
+	width: 35%;
+	background-color: #424242;
+	font-size: 13px;
+	color: white;
+	border: 1px solid #2D2C2E;
+	border-radius: 0px 0px 25px 25px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+ }
+ 
+ input[type='file'] {
+	 color: black;
+	 padding-top: 20px;
+  }
+
+#up_submit {
+	font-size: 15 px;
+	padding: 3px;
+	width: 60px;
+	border: 1px solid black;
+ }
+
+#chat_avatar {
+	border-radius: 50%;
+}
+#avatar{
+	border: 2px solid #2D2C2E;
+	border-radius: 50%;
+}
+
+ #pro_username {
+	margin-top: 0px;
+	background-color: #666;
+	color: #FFFFFF;
+	text-decoration: none;
+	font-size: 30px;
+	padding: 6px 8px 6px 8px;
+	background-repeat: no-repeat;
+}
+
+.feed {
+	position: fixed;
+	margin-top: 160px;
+	left: 20%;	
+	height: 75%;
+	width: 75%;
+	overflow-y:auto;
+	overflow: auto;
+	border: 1px solid #666;
+	border-radius: 10px;
+	background-color: #FFFFFF;
+}
+
+.underline {
+	padding-top: 1px;
+	padding-bottom: 1px;
+	width: 100%;
+	background-color: #D2CCD9;
+	color: white;
+ }
+
+.profile_underline {
+	padding-top: 1px;
+	padding-bottom: 1px;
+	width: 100%;
+	background-color: #2D2C2E;
+	color: white;
+ }
+
+/*
+	References:
+		https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp
+*/
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: gray; 
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #666; 
+}
+
+/*
+	References:
+		https://www.youtube.com/watch?v=JNtZl9SMmLQ
+*/
+
+*, *::after, *::before{
+	box-sizing: border-box;
+}
+
+.modal{
+	display: none;
+	background: rgba(0,0,0,0.4);
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom:0;
+	height: 100%;
+	width: 100%;
+}
+
+.modal:target{
+	display:table;
+}
+
+.modal__dialog{
+	display:table-cell;
+	vertical-align: middle;
+	padding-left: 200px;
+}
+
+.modal__content {
+	background:#FFFFFF;
+	width: 30%;
+	min-width: 300px;
+	margin: auto;
+	position: relative;
+	padding-bottom: 20px;
+	animation: slideUp 0.3s ease-in-out;
+}
+
+.modal__header{
+	background: #2D2C2E;
+	color: rgba(255, 255, 255, 0.8);
+	padding: 1rem;
+	position: relative;
+}
+
+.modal__close{
+	color: #FFFFFF;
+	text-decoration: none;
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+}
+
+.modal-trigger{
+	text-decoration: none;
+	padding: 8px;
+	background: #D2CCD9;
+	display:inline-block;
+	border-radius: 3px;
+	margin-top: 3px;
+	color: black;
+
+}
+
+.modal-trigger:hover {
+	background-color: #FFFFFF;
+}
+
+@keyframes slideUp{
+	from{
+		opacity: 0;
+		bottom: -200px;
+	}
+
+	to{
+		opacity: 1;
+		bottom: 0px;
+	}
+}
+.group_invite{
+	position: fixed;
+	margin-top: 80px;
+	left: 105px;
+	width: 100%;
+	font-size: 13px;
+	color: black;
+	text-align: center;
+}
+
+.group_search{
+	position: fixed;
+	margin-top: 80px;
+	left: 105px;
+	width: 100%;
+	font-size: 13px;
+	color: black;
+	text-align: center;
+}
+
+.my_group {
+	position: fixed;
+	margin-top: 180px;
+	left: 20%;	
+	height: 65%;
+	width: 75%;
+	overflow-y:auto;
+	overflow: auto;
+	border: 1px solid #666;
+	border-radius: 10px;
+	background-color: #FFFFFF;
+}
+
+.my_group a {
+	text-decoration: none;
+	color: black;
+}
+
+.my_group a:hover{
+	color: #666;
+}
+
+.form_groups_pos{
+	margin: auto;
+	margin-left: 60px;
+}
+
+#group_input {
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	font-size: 15 px;
+	padding: 5px;
+	width: 65%;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	border: 1 px black;
+	border-radius: 4px;
+	height: 50px;
+	outline: none;
+}
+
+#group_submit{
+	font-size: 15 px;
+	padding: 5px;
+	width: 100px;
+	margin-bottom: 3px;
+	border: 1px;
+	height: 45px;
+	border-radius: 4px;
+	outline: none;
+}
+
+#invites_input_1 {
+	position: fixed;
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	font-size: 15 px;
+	padding: 5px;
+	width: 65%;
+	margin-bottom: 3px;
+	margin-top: 0px;
+	border: 1 px black;
+	border-radius: 4px;
+	height: 30px;
+}
+
+#invites_input_2 {
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	font-size: 15 px;
+	padding: 5px;
+	width: 65%;
+	margin-bottom: 3px;
+	margin-top: 40px;
+	border: 1 px black;
+	border-radius: 4px;
+	height: 30px;
+}
+
+#invites_submit{
+	font-size: 15 px;
+	padding: 5px;
+	width: 100px;
+	margin-bottom: 3px;
+	border: 1px;
+	height: 32px;
+	border-radius: 4px;
+}
+
+.posting_invite{
+	position: fixed;
+	margin-top: 80px;
+	left: 105px;
+	width: 100%;
+	font-size: 13px;
+	color: black;
+}
+
+.form_invite{
+	margin-top: 5px;
+	left: 105px;
+	width: 100%;
+	font-size: 13px;
+	color: black;
+	text-align: center;
+}
+
+.my_group_invite {
+	position: fixed;
+	margin-top: 30px;
+	left: 20%;	
+	height: 65%;
+	width: 75%;
+	overflow-y:auto;
+	overflow: auto;
+	border: 1px solid #666;
+	border-radius: 10px;
+	background-color: #FFFFFF;
+}
+
+.user_position{
+	position: fixed;
+	left: 25%;
+	top: 10%;
+	margin:auto;
+	width: 100%;
+	font-size: 13px;
+	color: black;
+}
+
+#search_text {
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	font-size: 15 px;
+	padding: 5px;
+	width: 65%;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	border: 1 px black;
+	border-radius: 4px;
+	height: 50px;
+	outline: none;	
+}

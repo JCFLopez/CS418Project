@@ -49,5 +49,5 @@ input[type="text"] {
 }
 
 input [type="text"]:hover {
-	border: 1px solid black;
+	border: 1px solid red;
 }
