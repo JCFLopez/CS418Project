@@ -121,6 +121,19 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 					<li><a href="invite_groups.php">Groups Invites</a></li>
 					<li><a href="create_groups.php">Create Groups</a></li>
 					<li><a href="search_groups.php">Search Groups</a></li>
+					<?php
+                    if ($_SESSION['adminID'] == $userID) {
+                        echo "<li><a href='groupadmin.php'>Group Administration</a></li>";
+                    }
+					?>
+					<?php
+                    if ($_SESSION['adminID'] == $userID) {
+                        echo "<li><a href='adminhelp.php'>Help</a></li>";
+                    }
+                    else{
+                        echo "<li><a href='help.php'>Help</a></li>";
+                    }
+                	?>
 				</ul>
 			</div>
 

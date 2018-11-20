@@ -103,6 +103,19 @@
                 <li><a href="invite_groups.php">Groups Invites</a></li>
 				<li><a href="create_groups.php">Create Groups</a></li>
 				<li class="active"><a href="search_groups.php">Search Groups</a></li>
+				<?php
+                    if ($_SESSION['adminID'] == $userID) {
+                        echo "<li><a href='groupadmin.php'>Group Administration</a></li>";
+                    }
+				?>
+				<?php
+                    if ($_SESSION['adminID'] == $userID) {
+                        echo "<li><a href='adminhelp.php'>Help</a></li>";
+                    }
+                    else{
+                        echo "<li><a href='help.php'>Help</a></li>";
+                    }
+                ?>
             </ul>
 		</div>
 
@@ -181,13 +194,22 @@
 			</form>";
 
 			if (isset($_POST['join_submit'])) {
-				if (empty($_SESSION['searchgroupid'])) {
-					echo "Please enter group name";
-				} else if ($grType == 'private') {
-				} else {
-					$query3 = "INSERT INTO `group_users` (`user_id`, `group_id`) VALUES ($userID, " . $_SESSION['searchgroupid'] . ")";
-					$conn->query($query3);
-					header("Location: search_groups.php"); 
+				$archivedQuery = "SELECT isArchived FROM groups WHERE group_id = ".$_SESSION['searchgroupid']."";
+				$archived = $conn->query($archivedQuery);
+				if ($archived->num_rows > 0) {
+					while ($row = $archived->fetch_assoc()) {
+						$resultArchived = $row['isArchived'];
+					}
+				}
+				if ($resultArchived == 0) {
+					if (empty($_SESSION['searchgroupid'])) {
+						echo "Please enter group name";
+					} else if ($grType == 'private') {
+					} else {
+						$query3 = "INSERT INTO `group_users` (`user_id`, `group_id`) VALUES ($userID, " . $_SESSION['searchgroupid'] . ")";
+						$conn->query($query3);
+						header("Location: search_groups.php"); 
+					}
 				}
 			}
 		?>

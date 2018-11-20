@@ -132,6 +132,19 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 				<li><a href="invite_groups.php">Groups Invites</a></li>
                 <li><a href="create_groups.php">Create Groups</a></li>
 				<li><a href="search_groups.php">Search Groups</a></li>
+				<?php
+                    if ($_SESSION['adminID'] == $userID) {
+                        echo "<li><a href='groupadmin.php'>Group Administration</a></li>";
+                    }
+				?>
+                <?php
+                    if ($_SESSION['adminID'] == $userID) {
+                        echo "<li><a href='adminhelp.php'>Help</a></li>";
+                    }
+                    else{
+                        echo "<li><a href='help.php'>Help</a></li>";
+                    }
+                ?>				
             </ul>
 		</div>
 		
@@ -257,6 +270,86 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 						echo "<span>". "Name: ". $profileFname . " " . $profileLname."</span>";
 						echo "<span>". "Username: ". $profileUsername . "</span>";
 						echo "<span>". "Email Address: ". $profileEmail . "</span>";
+						
+						if ($_SESSION['adminID'] == $userID) {
+							echo "<center><b><u><span><a class='achievement_link'href='adminhelp.php'>Achievements</a></span></u></b></center>";
+						}
+						else{
+							echo "<center><b><u><span><a class='achievement_link'href='help.php'>Achievements</a></span></u></b></center>";
+						}
+
+						$queryMessageCount = "SELECT users.id, COUNT(messages.msg_id) AS msg_count FROM messages INNER JOIN users ON '" . $_GET['id']. "' = messages.user_id GROUP BY users.id";
+						$result_msg_count = $conn->query($queryMessageCount);
+						
+						if ($result_msg_count->num_rows > 0) { 
+							// output data of each row
+							$row_msg_count = $result_msg_count->fetch_assoc();
+							$msgCount = $row_msg_count['msg_count'];
+							
+							if($msgCount > 3) {
+								if ($_SESSION['adminID'] == $userID) {
+									echo "<span><a class='achievement_link'href='adminhelp.php'>:Active Poster:</a></span>";
+								}
+								else{
+									echo "<span><a class='achievement_link'href='help.php'>:Active Poster:</a></span>";
+								}
+							}
+						}
+
+						$queryMostLiked = "SELECT DISTINCT messages.msg_id, messages.user_id, MAX(messages.likes) AS most_liked FROM messages INNER JOIN users ON users.id = messages.user_id GROUP BY messages.msg_id ORDER BY most_liked DESC LIMIT 1";
+						$result_most_liked = $conn->query($queryMostLiked);
+						
+						if ($result_most_liked->num_rows > 0) { 
+							$row_most_liked = $result_most_liked->fetch_assoc();
+
+							$mostLikedUser = $row_most_liked['user_id'];
+							$getid = mysqli_real_escape_string($conn, $_GET['id']);
+							
+							if($mostLikedUser == $getid) {
+								if ($_SESSION['adminID'] == $userID) {
+									echo "<span><a class='achievement_link'href='adminhelp.php'>:Most Liked Post:</a></span>";
+								}
+								else{
+									echo "<span><a class='achievement_link'href='help.php'>:Most Liked Post:</a></span>";
+								}
+							}
+						}
+
+						$queryMostDisliked = "SELECT DISTINCT messages.msg_id, messages.user_id, MAX(messages.dislikes) AS most_disliked FROM messages INNER JOIN users ON users.id = messages.user_id GROUP BY messages.msg_id ORDER BY most_disliked DESC LIMIT 1";
+						$result_most_disliked = $conn->query($queryMostDisliked);
+						
+						if ($result_most_disliked->num_rows > 0) { 
+							$row_most_disliked = $result_most_disliked->fetch_assoc();
+
+							$mostDislikedUser = $row_most_disliked['user_id'];
+							$getid = mysqli_real_escape_string($conn, $_GET['id']);
+							
+							if($mostDislikedUser == $getid) {
+								if ($_SESSION['adminID'] == $userID) {
+									echo "<span><a class='achievement_link'href='adminhelp.php'>:Most Disliked Post:</a></span>";
+								}
+								else{
+									echo "<span><a class='achievement_link'href='help.php'>:Most Disliked Post:</a></span>";
+								}
+							}
+						}
+
+						$queryGroupCount = "SELECT group_users.user_id, COUNT(group_users.group_id ) AS group_count FROM group_users INNER JOIN users ON group_users.user_id = '" . $_GET['id']. "' GROUP BY users.id";
+						$result_group_count = $conn->query($queryGroupCount);
+						
+						if ($result_group_count->num_rows > 0) { 
+							// output data of each row
+							$row_group_count = $result_group_count->fetch_assoc();
+							$groupCount = $row_group_count['group_count'];
+							if($groupCount > 3) {
+								if ($_SESSION['adminID'] == $userID) {
+									echo "<span><a class='achievement_link'href='adminhelp.php'>:Group Collector:</a></span>";
+								}
+								else{
+									echo "<span><a class='achievement_link'href='help.php'>:Group Collector:</a></span>";
+								}
+							}
+						}
 					}
 				?>
 			</div>
