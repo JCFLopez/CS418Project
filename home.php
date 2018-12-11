@@ -17,7 +17,6 @@
 	} else {
 		$groupID = "1";
 	}
-
 	if (isset($_GET['page'])) {
 		$page = $_GET['page'];
 	} else {
@@ -36,7 +35,6 @@
 			$userID = $row['id'];  
 		} 
 	}
-
 	//admin query (the logic for all the admin checks currently holds for only 1 admin. If more are added then it may break)
 	$adminQuery = "SELECT id FROM users WHERE admin = 1";
 	$result = $conn->query($adminQuery);
@@ -45,8 +43,6 @@
 			$adminID = $row['id'];
 		}
 	}
-
-
 	/*
 		Section of code which restricts user's access to groups which they are not members of or which are private
 		/
@@ -76,7 +72,6 @@
 	} else {
 		$restrictedGroupIDs = array_diff($allGroupIDsArray,$accessGroupIDsArray);
 	} 
-
 	$_SESSION['restricted'] = $restrictedGroupIDs; //group IDs which a user does not have access to
 	foreach ($_SESSION['restricted'] as $key=>$value) {
 		$restrictedID = $value;
@@ -123,7 +118,6 @@
 						$conn->query($unDislikedQuery);
 						$conn->query($postunDisLikesQuery);
 					}
-
 					header("Location: home.php?id=" . $groupID . "");
 				} else {
 					$unlikedQuery = "UPDATE `messages` SET `likes` = `likes`-1 WHERE `messages`.`msg_id` = " . $_GET['liked'] . "";
@@ -139,7 +133,6 @@
 			header("Location: home.php?id=" . $groupID . "");
 		}
 	}
-
 	if (isset($_GET['disliked'])) {
 		$archivedQuery = "SELECT isArchived FROM groups WHERE group_id = $groupID";
 		$archived = $conn->query($archivedQuery);
@@ -160,7 +153,6 @@
 					$postDisLikesQuery = "INSERT INTO `messages_dislikes` (`msg_id`, `user_id`) VALUES ('" . $_GET['disliked'] . "', '" . $userID . "')";
 					$conn->query($dislikedQuery);
 					$conn->query($postDisLikesQuery);
-
 					//make sure user can't like and dislike a post
 					$hasUserLikedQuery = "SELECT `user_id` FROM `messages_likes` WHERE `msg_id` = " . $_GET['disliked'] . " AND `user_id` = " . $userID . "";
 					$userLiked = $conn->query($hasUserLikedQuery);
@@ -171,7 +163,6 @@
 						$conn->query($unlikedQuery);
 						$conn->query($postunLikesQuery);
 					}
-
 					header("Location: home.php?id=" . $groupID . "");
 				} else {
 					$unDislikedQuery = "UPDATE `messages` SET `dislikes` = `dislikes`-1 WHERE `messages`.`msg_id` = " . $_GET['disliked'] . "";
@@ -187,7 +178,6 @@
 			header("Location: home.php?id=" . $groupID . "");
 		}
 	}
-
 	
 	if (isset($_POST['msg'])) {
 		$archivedQuery = "SELECT isArchived FROM groups WHERE group_id = $groupID";
@@ -206,11 +196,9 @@
 				$conn->query($query); 
 				$conn->close();
 			} else {
-
 			}
 		}
 	}	
-
 	if (isset($_POST['rply']) && isset($_POST['commentid'])) {
 		$archivedQuery = "SELECT isArchived FROM groups WHERE group_id = $groupID";
 		$archived = $conn->query($archivedQuery);
@@ -233,7 +221,6 @@
 			}
 		}
 	}	
-
 	if (isset($_POST['deleteID'])) {
 		$archivedQuery = "SELECT isArchived FROM groups WHERE group_id = $groupID";
 		$archived = $conn->query($archivedQuery);
@@ -248,7 +235,6 @@
 			$conn->close();
 		}
 	}	
-
 	if (isset($_POST['archiveID'])) {
 		$archivedQuery = "SELECT isArchived FROM groups WHERE group_id = $groupID";
 		$archived = $conn->query($archivedQuery);
@@ -267,7 +253,6 @@
 			$conn->close();
 		}
 	}
-
 /*
 	if (isset($_POST['reply_submit'])) {
 		$message = mysqli_real_escape_string($conn, $_POST['reply']);
@@ -289,6 +274,18 @@
 		<script src="script/dropdown.js" type="text/javascript"></script>
 		<script>
 
+		/*
+		Reference: https://www.youtube.com/watch?v=BkcOqyq8W2M
+		*/
+		function imagepreview(input) {
+			if (input.files && input.files[0]) {
+				var filerd = new FileReader();
+				filerd.onload=function (e) {
+					$("#imgpreview").attr("src", e.target.result);
+				};
+				filerd.readAsDataURL(input.files[0]);
+			}
+		}
 
 		function displayMessages() {
 			var xhr = new XMLHttpRequest();
@@ -297,15 +294,41 @@
 			var adminID = "<?php echo $adminID ?>";
 			var userID = "<?php echo $userID ?>";
 			xhr.open('GET', 'messages.php?gid='+ID+'&page='+page, true);
-
 			xhr.onload = function (){
 				if(this.status == 200) {
 					var msgs = JSON.parse(this.responseText);
 					var output = '';
-
 					for(var i in msgs){
 						if (ID == msgs[i].group_id){
-							output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src='uploads/"+msgs[i].img+"' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";
+							if(msgs[i].img == ''){
+								var gravatar = "https://www.gravatar.com/avatar/"+msgs[i].email+"?d=retro";
+								if(gravatar){
+									if (msgs[i].image != null) {
+										output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src="+gravatar+" alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": <img class='msgimage' src='uploads/"+msgs[i].image+"' alt='Profile Pic'></h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";										
+									} else if (msgs[i].file != null) {
+										output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src="+gravatar+" alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": <a href='uploads/"+msgs[i].file+"' download>"+msgs[i].cleanName+"</a></h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";										
+									} else {
+										output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src="+gravatar+" alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";
+									}
+								} else {
+									if (msgs[i].image != null) {
+										output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src='uploads/profiledefault.png' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": <img class='msgimage' src='uploads/"+msgs[i].image+"' alt='Profile Pic'></h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";									
+									} else if (msgs[i].file != null) {
+										output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src='uploads/profiledefault.png' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": <a href='uploads/"+msgs[i].file+"' download>"+msgs[i].cleanName+"</a></h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";
+									} else {
+										output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src='uploads/profiledefault.png' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";
+									}
+								}
+							} else {
+								if (msgs[i].image != null) {
+									output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src='uploads/"+msgs[i].img+"' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": <img class='msgimage' src='uploads/"+msgs[i].image+"' alt='Profile Pic'></h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";							
+								} else if ((msgs[i].file != null)) {
+									output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src='uploads/"+msgs[i].img+"' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": <a href='uploads/"+msgs[i].file+"' download>"+msgs[i].cleanName+"</a></h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";	
+								} else {
+									output+= "<div id='msgWrapper"+msgs[i].msg_id+"'><span><img id ='chat_avatar' width='50' height='50' src='uploads/"+msgs[i].img+"' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><div class='reply_pos'><form id="+msgs[i].msg_id+" onsubmit='postReply(event,"+msgs[i].msg_id+")'><input id='replying"+msgs[i].msg_id+"' class='replying' type='text' name='reply' placeholder='Post Your Reply...'><input type='hidden' name='commentID' id='commentID' value='"+msgs[i].msg_id+"'/><input id='reply_submit' type='submit' name='reply_submit' value='Reply!'></form></div><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form><span><button type='button' id='show_replies' onclick='toggleReplies(event,"+msgs[i].msg_id+")'>Show Replies</button></span>";
+								}
+							}
+						
 							if (adminID == userID){
 								output+= "<span><form id='deleteMsg' onsubmit='deleteMsg(event,"+msgs[i].msg_id+")'><input id='deleting"+msgs[i].msg_id+"' class='deleting' type='submit' name='delete' value='Delete' data-id='"+msgs[i].msg_id+"'></form></span><div class='underline'></div></div>";
 							} else {
@@ -313,21 +336,16 @@
 							}
 						}
 					}
-
 					document.getElementsByClassName("feed")[0].innerHTML = output;
-
 					if (msgs == null){
 						var noMsgs = "<h2 id ='userName'>No messages in this channel yet. Come back soon!</h2>";
 						document.getElementsByClassName("feed")[0].innerHTML = noMsgs; 
 					}
 				}
 			}
-
 			xhr.send();
 		}
-
 			window.onload=displayMessages;
-
 		</script>
 	</head>
 	<body>
@@ -422,12 +440,42 @@
 			</form>";
 
 			/*
+			references: https://www.youtube.com/watch?v=BkcOqyq8W2M
+						http://talkerscode.com/webtricks/upload-image-from-url-using-php.php
+			*/
+			echo "<a href='#modal' class='modal-trigger-img'>Upload!</a>";
+
+			echo	"<div class='modal' id='modal'>
+						<div class='modal__dialog'>
+							<section class='modal__content'>
+								<header class='modal__header'>
+									Upload Files and Images
+									<a href='#' class='modal__close'>Close</a>
+								</header>
+
+								<div class='modal__body'>
+								<form action='upload.php?gID=$groupID' method='post' enctype='multipart/form-data'>
+									<input type='file' name='fileToUpload' id='fileToUpload' onchange='imagepreview(this);'>
+									<img id='imgpreview' alt='Image Preview'/>
+									<input id='up_submit' type='submit' value='Upload!' name='submit'>
+								</form>
+								</div>
+								<div class='modal__body'>
+								<form action='urlimage.php?gID=$groupID' method='post'>
+									<input type='text' name='img_url' placeholder='Enter Image URL'>
+									<input id='up_submit' type='submit' value='Upload!' name='urlimg'>
+								</form>
+								</div>
+							</section>
+						</div>
+					</div>";
+
+			/*
 			<form id=enterReply>
 			<input id='replying' type='text' name='reply' placeholder='Post Your Reply...'>
 			<input id='reply_submit' type='submit' name='reply_submit' value='Reply!'>
 			</form>
 			*/
-
 			if ($adminID == $userID) {
 				$archivedQuery = "SELECT isArchived FROM groups WHERE group_id = $groupID";
 				$archived = $conn->query($archivedQuery);
@@ -442,20 +490,15 @@
 					echo "<form id='archiveGroup' onsubmit='archive(event, $groupID)'><div class='dislikeys'><input id='archiving$groupID' class='archive' type='submit' name='delete' value='UnArchive' data-id=$groupID></div></form>";
 				}
 			}
-
-
 		?>
 		</div>
 		<div class='pagination'>
 		<?php
-
 			/*
 				Section to display pagination links
 				(The actual msg retrieval and display is done through messages.php and displayMessages(), this is simply to show the links 1.2.3.4....)
 			*/
-
 			$numPerPage = 10; //results per page
-
 			$numMsgs = "SELECT COUNT(msg_id) FROM messages WHERE parent_id = 0 AND group_id = $groupID"; //total number of messages (parents only) in the database
 			$resultNum = $conn->query($numMsgs);
 			if ($resultNum->num_rows > 0) {
@@ -463,68 +506,54 @@
 					$numOfMsgs = $row['COUNT(msg_id)'];
 				}
 			}
-
 			$numOfPages = ceil($numOfMsgs/$numPerPage); //number of total pages
-
 			$pageFirstResult = ($page-1)*$numPerPage; //the limit starting number
-
 			for ($page=1;$page<=$numOfPages;$page++) {
 				echo '<a href="home.php?id='.$groupID.'&page='.$page.'">' .$page. '</a>'; //display page links
 			}
-
 		?>
 		</div>
 		<script>
 		
 			document.getElementById('enterMsg').addEventListener('submit', postMessage);
 			document.getElementById('enterMsg').addEventListener('submit', displayMessages);
+
 			/*
 			function myFunction() {
 				//document.getElementById('logo').innerHTML = 'timeee';
 				var x = document.getElementsByClassName("time");
     			x[1].innerHTML = "Hello World!";
 			}*/
-
 			//document.getElementById('816').addEventListener('submit', postReply);
 			//document.getElementById('816').addEventListener('submit', displayMessages);
-
 			function postMessage(e) {
 				e.preventDefault();
 				
 				var msg = document.getElementById('messeging').value;
 				var params = "msg="+msg;
-
 				var ID = "<?php echo $groupID ?>";
-
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST', 'home.php?id='+ID,false);
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
 				xhr.send(params);
 				document.getElementById('enterMsg').reset();
 			}
 
 			function postReply(e,num) {
-
 				e.preventDefault();
 				//var commentID = document.getElementById('commentID').value;
 				//console.log(num);
 				var reply = document.getElementById("replying"+num).value;
 				//var commentID = document.getElementById('commentID').value;
 				var params = "rply="+reply+"&commentid="+num;
-
-
 				var ID = "<?php echo $groupID ?>";
-
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST', 'home.php?id='+ID,false);
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
 				xhr.send(params);
 				//document.getElementById('enterReply').reset();
 				displayMessages();
 			}
-
 			function deleteMsg(e,num) {
 				e.preventDefault();
 				//var commentID = document.getElementById('commentID').value;
@@ -532,59 +561,54 @@
 				var reply = document.getElementById("deleting"+num).value;
 				//var commentID = document.getElementById('commentID').value;
 				var params = "deleteID="+num;
-
-
 				var ID = "<?php echo $groupID ?>";
-
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST', 'home.php?id='+ID,false);
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
 				xhr.send(params);
 				//document.getElementById('enterReply').reset();
 				displayMessages();
 			}
-
 			function archive(e,num) {
 				e.preventDefault();
 				//var z = $("#archiving"+num).css("color","red");
 				//document.getElementById("#archiving"+num).innerHTML = ;
-
 				//var commentID = document.getElementById('commentID').value;
 				//console.log(num);
 				//var reply = document.getElementById("deleting"+num).value;
 				//var commentID = document.getElementById('commentID').value;
 				var params = "archiveID="+num;
-
-
 				var ID = "<?php echo $groupID ?>";
-
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST', 'home.php?id='+ID,false);
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
 				xhr.send(params);
 				//document.getElementById('enterReply').reset();
 				displayMessages();
 			}
-
 			function displayReplies(e,num) {
 				//console.log('heyyyy');
-
 				var xhr = new XMLHttpRequest();
 				var ID = "<?php echo $groupID ?>";
 				var adminID = "<?php echo $adminID ?>";
 				var userID = "<?php echo $userID ?>";
 				xhr.open('GET', 'replies.php?gid='+ID+'&cid='+num, true);
-
 				xhr.onload = function (){
 					if(this.status == 200) {
 						var msgs = JSON.parse(this.responseText);
 						var output = '';
-
 						for(var i in msgs){
 							if (ID == msgs[i].group_id){
-								output+= "<div class='reply_indent'><span><img id ='chat_avatar' width='50' height='50' src='uploads/"+msgs[i].img+"' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form></div>";
+								if(msgs[i].img == ''){
+									var gravatar = "https://www.gravatar.com/avatar/"+msgs[i].email+"?d=retro";
+									if(gravatar){
+										output+= "<div class='reply_indent'><span><img id ='chat_avatar' width='50' height='50' src="+gravatar+" alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form></div>";
+									} else {
+										output+= "<div class='reply_indent'><span><img id ='chat_avatar' width='50' height='50' src='uploads/profiledefault.png' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form></div>";
+									}
+								} else {
+									output+= "<div class='reply_indent'><span><img id ='chat_avatar' width='50' height='50' src='uploads/"+msgs[i].img+"' alt='Profile Pic'><h2 id ='userName'>"+msgs[i].username+": "+msgs[i].msg+"</h2><div class='time'>"+msgs[i].post_time+"</div></span><form action='home.php?id="+ID+" &liked="+msgs[i].msg_id+"' method='POST'><div class='likeys'><input id='like_input'type='submit' name='like' value='Like'> "+msgs[i].likes+" likes</div></form><form action='home.php?id="+ID+" &disliked="+msgs[i].msg_id+"' method='POST'><div class='dislikeys'><input id='dislike_input'type='submit' name='dislike' value='Dislike'> "+msgs[i].dislikes+" dislikes</div></form></div>";
+								}
 								if (adminID == userID){
 									output+= "<span><form id='deleteMsg' onsubmit='deleteMsg(event,"+msgs[i].msg_id+")'><input id='deleting"+msgs[i].msg_id+"' class='deleting' type='submit' name='delete' value='Delete' data-id='"+msgs[i].msg_id+"'></form></span><div class='underline'></div></div>";
 								} else {
@@ -592,13 +616,10 @@
 								}
 							}
 						}
-
 						var newDiv = document.createElement('div');
 						newDiv.setAttribute("id", "replies"+num);
 						newDiv.innerHTML = output;
-
 						document.getElementById("msgWrapper"+num).appendChild(newDiv);
-
 						/*
 						if (msgs == null){
 							var noMsgs = "<h2 id ='userName'>No messages in this channel yet. Come back soon!</h2>";
@@ -606,12 +627,9 @@
 						}*/
 					}
 				}
-
 				xhr.send();
 			}
-
 			function toggleReplies(e,num) {
-
 				var x = $('#replies'+num).css("display");
 	
 				if (x == undefined){
@@ -622,9 +640,7 @@
 				}
 				
 				//displayReplies(e,num);
-
 				//$('#replies').toggle();
-
 				var display = $('#replies').css("display");
 				//console.log(display);
 			}
@@ -632,4 +648,3 @@
 		</script>
 	</body>
 </html>
-

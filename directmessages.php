@@ -11,11 +11,29 @@
 		$groupID = $_GET['gid'];	
 	} else {
 		$groupID = "1";
+    }
+    
+    if(isset($_GET['id'])) {
+		$uID = $_GET['id'];	
+    }
+    
+    //getUserID();
+	//turn these into functions soon.
+	//retrieve UserID from database
+	$userEmail = $_SESSION['email'];
+	$queryID = "SELECT id FROM users WHERE email = " . "'$userEmail';";
+	$userEmail = $conn->query($queryID);
+
+	if ($userEmail->num_rows > 0) { 
+		// output data of each row
+		while($row = $userEmail->fetch_assoc()) {
+			$userID = $row['id'];  
+		} 
 	}
 
 	$numPerPage = 10; //results per page
 
-	$numMsgs = "SELECT COUNT(msg_id) FROM messages WHERE parent_id = 0 AND group_id = $groupID"; //total number of messages (parents only) in the database
+	$numMsgs = "SELECT COUNT(msg_id) FROM direct_messages WHERE (userid1 = $userID AND userid2 = $uID) OR (userid1 = $uID AND userid2 = $userID)"; //total number of messages (parents only) in the database
 	$resultNum = $conn->query($numMsgs);
 	if ($resultNum->num_rows > 0) {
 		while($row = $resultNum->fetch_assoc()) {
@@ -34,24 +52,7 @@
 
 	$pageFirstResult = ($page-1)*$numPerPage; //the limit starting number
 
-	/*
-	$query2 = "SELECT * FROM messages WHERE parent_id = 0 AND group_id = $groupID LIMIT ".$pageFirstResult.",".$numPerPage."";
-	$resultQuery2 = $conn->query($query2);
-	if ($resultQuery2->num_rows > 0) {
-		while($row = $resultQuery2->fetch_assoc()) {
-			echo $row['msg_id'] . ' ' . $row['msg'] . '<br>';
-		}
-	}*/
-
-	/*
-	for ($page=1;$page<=$numOfPages;$page++) {
-			echo '<a href="messages.php?id='.$groupID.'&page='.$page.'">' .$page. '</a>'; //display page links
-		}
-	*/
-
-
-
-	$postFeed = "SELECT group_id, img, username, msg, post_time, msg_id, likes, dislikes, email, file, image, cleanName from users inner join messages on users.id = messages.user_id WHERE group_id = $groupID AND parent_id = 0 ORDER BY msg_id DESC LIMIT ".$pageFirstResult.",".$numPerPage."";
+	$postFeed = "SELECT img, username, msg, post_time, msg_id, email, file, image, cleanName from users inner join direct_messages on users.id = direct_messages.userid1 WHERE (userid1 = $userID AND userid2 = $uID) OR (userid1 = $uID AND userid2 = $userID) ORDER BY msg_id DESC LIMIT ".$pageFirstResult.",".$numPerPage."";
 	$result = $conn->query($postFeed);
 	if ($result->num_rows > 0) { 
 		// output data of each row

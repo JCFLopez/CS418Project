@@ -18,6 +18,10 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 		$groupID = "1";
 	}
 
+	if(isset($_GET['id'])) {
+		$uID = $_GET['id'];	
+	}
+	
 	//getUserID();
 	//turn these into functions soon.
 	//retrieve UserID from database
@@ -77,7 +81,7 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 	}
 ?>
 
-<!doctype HTML>
+<!DOCTYPE HTML>
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
@@ -88,7 +92,7 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 		<script src="script/dropdown.js" type="text/javascript"></script>
 	</head>
 	<body>
-	<div class="header">
+		<div class="header">
 			<?php 
 				echo "<div id='logo'>";
 					echo $_SESSION['username'];
@@ -128,15 +132,17 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 				</li>
 			</ul>
 
-			 <ul>
+			<ul>
 				<li><a href="invite_groups.php">Groups Invites</a></li>
                 <li><a href="create_groups.php">Create Groups</a></li>
 				<li><a href="search_groups.php">Search Groups</a></li>
+
 				<?php
                     if ($_SESSION['adminID'] == $userID) {
                         echo "<li><a href='groupadmin.php'>Group Administration</a></li>";
                     }
 				?>
+
                 <?php
                     if ($_SESSION['adminID'] == $userID) {
                         echo "<li><a href='adminhelp.php'>Help</a></li>";
@@ -150,13 +156,14 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 		
 		<div class="profile_pos">
 			<div class="profile">
-			<center>
+				<center>
 				<?php
-				if(isset($_SESSION['username'])) {
-
+					if(isset($_SESSION['email'])) {
 				?>
 
-                <?php
+				<?php
+
+
 					if(isset($_POST['upload'])){
 
 						$file = $_FILES['file'];
@@ -175,9 +182,10 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 						if(in_array($fileActualExt, $allowed)) {
 							if ($fileError === 0) {
 								if ($fileSize < 1000000) {
-									$fileDestination = 'uploads/'.$fileName;
+									$fileNewName = "profile".$profileUsername.".". $fileActualExt;
+									$fileDestination = 'uploads/'.$fileNewName;
 									move_uploaded_file($fileTmpName, $fileDestination);
-									$result = mysqli_query($conn,"UPDATE users SET img = '".$fileName."' WHERE username = '".$profileUsername."'");
+									$result = mysqli_query($conn,"UPDATE users SET img = '".$fileNewName."' WHERE username = '".$profileUsername."'");
 									header("Location: profile.php?upload_success");
 								} else {
 									echo "Your file is too big!";
@@ -198,15 +206,32 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 					while($row_img = mysqli_fetch_assoc($result_img)){
 							
 							if($row_img['img'] == ''){
+								$gravatar = "https://www.gravatar.com/avatar/".md5($row_img['email'])."?d=retro";
+								
+								if(isset($gravatar)){
+									echo "<img id='avatar' width='300' height='300' src= $gravatar alt='Default Profile Pic'>";
+								} else {
 									echo "<img id='avatar' width='300' height='300' src='uploads/profiledefault.png' alt='Default Profile Pic'>";
+								}
 							} else {
 									echo "<img id='avatar' width='300' height='300' src='uploads/".$row_img['img']."' alt='Profile Pic'>";
 							}
-							echo "<br>";
-					}
-                ?>
-				<a href="#modal" class="modal-trigger">Change Picture</a>
+							echo "<br>";	
+				?>
 
+				<?php if($userID == $uID){ ?>
+					<a href="#modal" class="modal-trigger">Change Picture</a>
+
+					<div class= default_pos>
+						<form action="deleteimg.php" method="post">
+							<button class="delete_img" align="right" type="submit" name="delete">Default Gravatar</button>
+						</form>
+
+						<form action="defaultimg.php" method="post">
+							<button class="default_img" type="submit" name="delete">Default Picture</button>
+						</form>
+					</div>
+				<?php }?>
 				<div class="modal" id="modal">
 					<div class="modal__dialog">
 						<section class="modal__content">
@@ -231,6 +256,7 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 						echo $profileFname;
 						echo " " . $profileLname;
 					echo "</div>";
+					echo '<button class="dm" type=\'button\' onclick=\'location.href = "dm.php?id='.$uID.'"\'>Direct Message!</button>';
 				?>
 				</b>
 				</center>
@@ -258,6 +284,7 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 								echo "<span>"."User is only in the global group"."</span>";
 							}
 						}
+					}
 					?>
 				</ul>
 			</div>
@@ -272,10 +299,9 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 						echo "<span>". "Email Address: ". $profileEmail . "</span>";
 						
 						if ($_SESSION['adminID'] == $userID) {
-							echo "<center><b><u><span><a class='achievement_link'href='adminhelp.php'>Achievements</a></span></u></b></center>";
-						}
-						else{
-							echo "<center><b><u><span><a class='achievement_link'href='help.php'>Achievements</a></span></u></b></center>";
+							echo "<center><b><u><span><a class='achievement_link' href='adminhelp.php'>Achievements</a></span></u></b></center>";
+						} else {
+							echo "<center><b><u><span><a class='achievement_link' href='help.php'>Achievements</a></span></u></b></center>";
 						}
 
 						$queryMessageCount = "SELECT users.id, COUNT(messages.msg_id) AS msg_count FROM messages INNER JOIN users ON '" . $_GET['id']. "' = messages.user_id GROUP BY users.id";
@@ -288,10 +314,9 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 							
 							if($msgCount > 3) {
 								if ($_SESSION['adminID'] == $userID) {
-									echo "<span><a class='achievement_link'href='adminhelp.php'>:Active Poster:</a></span>";
-								}
-								else{
-									echo "<span><a class='achievement_link'href='help.php'>:Active Poster:</a></span>";
+									echo "<span><a class='achievement_link' href='adminhelp.php'>:Active Poster:</a></span>";
+								} else {
+									echo "<span><a class='achievement_link' href='help.php'>:Active Poster:</a></span>";
 								}
 							}
 						}
@@ -307,10 +332,9 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 							
 							if($mostLikedUser == $getid) {
 								if ($_SESSION['adminID'] == $userID) {
-									echo "<span><a class='achievement_link'href='adminhelp.php'>:Most Liked Post:</a></span>";
-								}
-								else{
-									echo "<span><a class='achievement_link'href='help.php'>:Most Liked Post:</a></span>";
+									echo "<span><a class='achievement_link' href='adminhelp.php'>:Most Liked Post:</a></span>";
+								} else {
+									echo "<span><a class='achievement_link' href='help.php'>:Most Liked Post:</a></span>";
 								}
 							}
 						}
@@ -326,10 +350,9 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 							
 							if($mostDislikedUser == $getid) {
 								if ($_SESSION['adminID'] == $userID) {
-									echo "<span><a class='achievement_link'href='adminhelp.php'>:Most Disliked Post:</a></span>";
-								}
-								else{
-									echo "<span><a class='achievement_link'href='help.php'>:Most Disliked Post:</a></span>";
+									echo "<span><a class='achievement_link' href='adminhelp.php'>:Most Disliked Post:</a></span>";
+								} else {
+									echo "<span><a class='achievement_link' href='help.php'>:Most Disliked Post:</a></span>";
 								}
 							}
 						}
@@ -343,10 +366,9 @@ References: https://www.youtube.com/watch?v=JNtZl9SMmLQ
 							$groupCount = $row_group_count['group_count'];
 							if($groupCount > 3) {
 								if ($_SESSION['adminID'] == $userID) {
-									echo "<span><a class='achievement_link'href='adminhelp.php'>:Group Collector:</a></span>";
-								}
-								else{
-									echo "<span><a class='achievement_link'href='help.php'>:Group Collector:</a></span>";
+									echo "<span><a class='achievement_link' href='adminhelp.php'>:Group Collector:</a></span>";
+								} else {
+									echo "<span><a class='achievement_link' href='help.php'>:Group Collector:</a></span>";
 								}
 							}
 						}
